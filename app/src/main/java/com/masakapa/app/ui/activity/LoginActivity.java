@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Redirect if already logged in
         if (authViewModel.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
             return;
         }
@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginBtn.setOnClickListener(v -> loginUser());
         registerLink.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
         });
     }
 
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             } else {
                 Toast.makeText(this, "Login gagal: " + result.getErrorMessage(), Toast.LENGTH_LONG).show();
