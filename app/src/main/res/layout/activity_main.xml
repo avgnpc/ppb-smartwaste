@@ -34,6 +34,6 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="32dp"
         app:srcCompat="@drawable/baseline_photo_camera_24"
-        app:backgroundTint="@color/orange" />
+        app:backgroundTint="@color/colorPrimary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

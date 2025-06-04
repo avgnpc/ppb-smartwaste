@@ -1,42 +1,69 @@
 package com.smartwaste.app.model;
 
+import com.google.firebase.firestore.PropertyName;
+
 public class User {
     private String uid;
-    private String first_name;
-    private String last_name;
     private String email;
-    private String birth_date;
-    private long created_at;
+    private String location;
+    private long createdAt;
+
+    private String firstName;
+    private String lastName;
+    private String birthDate;
+    private String profileImage;
 
     public User() {
-        // Firestore needs empty constructor
+        // Required empty constructor for Firestore
     }
 
-    public User(String uid, String first_name, String last_name, String email, String birth_date, long created_at) {
+    public User(String uid, String firstName, String lastName, String email, String birthDate, long createdAt, String location) {
         this.uid = uid;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
-        this.birth_date = birth_date;
-        this.created_at = created_at;
+        this.birthDate = birthDate;
+        this.createdAt = createdAt;
+        this.location = location;
     }
 
-    // Getters and setters
     public String getUid() { return uid; }
     public void setUid(String uid) { this.uid = uid; }
-
-    public String getFirst_name() { return first_name; }
-    public void setFirst_name(String first_name) { this.first_name = first_name; }
-
-    public String getLast_name() { return last_name; }
-    public void setLast_name(String last_name) { this.last_name = last_name; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getBirth_date() { return birth_date; }
-    public void setBirth_date(String birth_date) { this.birth_date = birth_date; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public long getCreated_at() { return created_at; }
-    public void setCreated_at(long created_at) { this.created_at = created_at; }
+    @PropertyName("first_name")
+    public String getFirstName() { return firstName; }
+
+    @PropertyName("first_name")
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    @PropertyName("last_name")
+    public String getLastName() { return lastName; }
+
+    @PropertyName("last_name")
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    @PropertyName("birth_date")
+    public String getBirthDate() { return birthDate; }
+
+    @PropertyName("birth_date")
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
+
+    @PropertyName("created_at")
+    public long getCreatedAt() { return createdAt; }
+
+    @PropertyName("created_at")
+    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+
+    public String getProfileImage() { return profileImage; }
+    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+
+    public String getName() {
+        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+    }
 }

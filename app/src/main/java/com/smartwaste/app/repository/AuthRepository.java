@@ -27,7 +27,7 @@ public class AuthRepository {
         }
     }
 
-    public void registerUser(String firstName, String lastName, String email, String password, String birthDate,
+    public void registerUser(String firstName, String lastName, String email, String password, String birthDate, String location,
                              Runnable onSuccess, OnFailureListener onFailure) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -36,17 +36,16 @@ public class AuthRepository {
                     if (firebaseUser != null) {
                         userLiveData.setValue(firebaseUser);
 
-                        // Create a user object
                         User user = new User(
                                 firebaseUser.getUid(),
                                 firstName,
                                 lastName,
                                 email,
                                 birthDate,
-                                System.currentTimeMillis()
+                                System.currentTimeMillis(),
+                                location
                         );
 
-                        // Save user to Firestore
                         db.collection("users")
                                 .document(firebaseUser.getUid())
                                 .set(user)

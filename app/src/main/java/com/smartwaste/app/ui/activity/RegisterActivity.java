@@ -1,7 +1,9 @@
 package com.smartwaste.app.ui.activity;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -10,7 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.smartwaste.app.R;
@@ -21,6 +26,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
     private EditText firstNameEdit, lastNameEdit, emailEdit, birthDateEdit, passwordEdit, confirmPasswordEdit;
     private Button registerBtn;
@@ -34,10 +41,10 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Initialize ViewModel
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this,
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
+                .get(AuthViewModel.class);
 
-        // Bind views
         firstNameEdit = findViewById(R.id.first_name);
         lastNameEdit = findViewById(R.id.last_name);
         emailEdit = findViewById(R.id.email);
@@ -45,14 +52,15 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEdit = findViewById(R.id.password);
         confirmPasswordEdit = findViewById(R.id.confirm_password);
         registerBtn = findViewById(R.id.register_btn);
-        loginLink = findViewById(R.id.link_login); // Add to layout
+        loginLink = findViewById(R.id.link_login);
 
-        // Listeners
         birthDateEdit.setOnClickListener(v -> showDatePicker());
         registerBtn.setOnClickListener(v -> attemptRegister());
         loginLink.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
 
         observeViewModel();
+
+        checkLocationPermissionOrFetchCity();
     }
 
     private void showDatePicker() {
@@ -111,6 +119,11 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(this, "Gagal daftar: " + result.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
         });
+
+        authViewModel.getUserCity().observe(this, city -> {
+            // Optional: show user city for debugging or logging, but no UI display needed
+            // Toast.makeText(this, "Lokasi terdeteksi: " + city, Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void clearFields() {
@@ -120,5 +133,32 @@ public class RegisterActivity extends AppCompatActivity {
         birthDateEdit.setText("");
         passwordEdit.setText("");
         confirmPasswordEdit.setText("");
+    }
+
+    private void checkLocationPermissionOrFetchCity() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            authViewModel.fetchUserCity();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Izin lokasi diberikan", Toast.LENGTH_SHORT).show();
+                authViewModel.fetchUserCity();
+            } else {
+                Toast.makeText(this, "Izin lokasi ditolak", Toast.LENGTH_SHORT).show();
+                // We can still register user with "Unknown" city
+            }
+        }
     }
 }

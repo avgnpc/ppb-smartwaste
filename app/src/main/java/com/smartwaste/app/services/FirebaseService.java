@@ -36,6 +36,22 @@ public class FirebaseService {
         return auth.getCurrentUser();
     }
 
+    public void getUserById(String uid,
+                            OnSuccessListener<User> success,
+                            OnFailureListener failure) {
+        db.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        User user = snapshot.toObject(User.class);
+                        success.onSuccess(user);
+                    } else {
+                        failure.onFailure(new Exception("User not found"));
+                    }
+                })
+                .addOnFailureListener(failure);
+    }
+
     public void logout() {
         auth.signOut();
     }

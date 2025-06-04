@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="orange">#FFA726</color>
+
+    <!-- Ocean & Eco Theme -->
+    <color name="colorPrimary">#007A7A</color>         <!-- Main accent, FABs, switches -->
+    <color name="colorPrimaryDark">#005C5C</color>     <!-- Status bar, darker accents -->
+    <color name="colorAccent">#00BFA6</color>          <!-- Highlights, links, active icons -->
+    <color name="colorBackground">#EAFDFC</color>      <!-- App background -->
+    <color name="colorSurface">#D7FBE8</color>         <!-- Cards, panels, input backgrounds -->
+    <color name="colorOnPrimary">#FFFFFF</color>       <!-- Text/icons on primary surfaces -->
+    <color name="colorOnBackground">#103F3F</color>    <!-- Main text color on background -->
+    <color name="colorError">#D32F2F</color>           <!-- Error states -->
 </resources>

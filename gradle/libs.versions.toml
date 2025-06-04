@@ -37,6 +37,7 @@ lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmode
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "lifecycle" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesAuth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -61,6 +61,9 @@ dependencies {
     // Google Sign-In
     implementation(libs.play.services.auth)
 
+    // Google Play Services Location
+    implementation(libs.play.services.location)
+
     // Facebook Login
     implementation(libs.facebook.login)
 
