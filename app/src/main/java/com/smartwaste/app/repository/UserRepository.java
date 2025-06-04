@@ -1,10 +1,10 @@
-package com.masakapa.app.repository;
+package com.smartwaste.app.repository;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
-import com.masakapa.app.model.User;
-import com.masakapa.app.services.FirebaseService;
+import com.smartwaste.app.model.User;
+import com.smartwaste.app.services.FirebaseService;
 
 public class UserRepository {
     private final FirebaseService firebaseService = new FirebaseService();

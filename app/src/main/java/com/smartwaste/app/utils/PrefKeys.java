@@ -1,4 +1,4 @@
-package com.masakapa.app.utils;
+package com.smartwaste.app.utils;
 
 public class PrefKeys {
     public static final String PREF_NAME = "masakapa_prefs";

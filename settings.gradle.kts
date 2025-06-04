@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MasakApa"
+rootProject.name = "SmartWaste"
 include(":app")
  

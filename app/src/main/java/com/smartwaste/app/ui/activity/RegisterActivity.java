@@ -1,4 +1,4 @@
-package com.masakapa.app.ui.activity;
+package com.smartwaste.app.ui.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -13,8 +13,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.masakapa.app.R;
-import com.masakapa.app.viewmodel.AuthViewModel;
+import com.smartwaste.app.R;
+import com.smartwaste.app.viewmodel.AuthViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

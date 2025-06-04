@@ -1,4 +1,4 @@
-package com.masakapa.app.model;
+package com.smartwaste.app.model;
 
 public class LoginResult {
     private final boolean success;

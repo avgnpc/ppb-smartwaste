@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.masakapa.app"
+    namespace = "com.smartwaste.app"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.masakapa.app"
+        applicationId = "com.smartwaste.app"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

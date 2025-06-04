@@ -1,4 +1,4 @@
-package com.masakapa.app.repository;
+package com.smartwaste.app.repository;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -7,7 +7,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.masakapa.app.model.User;
+import com.smartwaste.app.model.User;
 
 public class AuthRepository {
 

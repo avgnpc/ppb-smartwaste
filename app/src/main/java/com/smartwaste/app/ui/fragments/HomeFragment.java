@@ -1,4 +1,4 @@
-package com.masakapa.app.ui.fragments;
+package com.smartwaste.app.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import com.masakapa.app.R;
+import com.smartwaste.app.R;
 
 public class HomeFragment extends Fragment {
 

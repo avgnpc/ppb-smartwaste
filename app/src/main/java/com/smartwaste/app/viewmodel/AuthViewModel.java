@@ -1,4 +1,4 @@
-package com.masakapa.app.viewmodel;
+package com.smartwaste.app.viewmodel;
 
 import android.content.SharedPreferences;
 
@@ -7,10 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.masakapa.app.model.RegisterResult;
-import com.masakapa.app.model.LoginResult;
-import com.masakapa.app.repository.AuthRepository;
-import com.masakapa.app.utils.PrefKeys;
+import com.smartwaste.app.model.RegisterResult;
+import com.smartwaste.app.model.LoginResult;
+import com.smartwaste.app.repository.AuthRepository;
+import com.smartwaste.app.utils.PrefKeys;
 
 public class AuthViewModel extends ViewModel {
 

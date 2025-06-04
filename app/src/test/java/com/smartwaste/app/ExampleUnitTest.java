@@ -1,4 +1,4 @@
-package com.masakapa.app;
+package com.smartwaste.app;
 
 import org.junit.Test;
 

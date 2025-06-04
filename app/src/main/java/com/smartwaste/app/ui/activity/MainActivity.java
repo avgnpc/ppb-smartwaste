@@ -1,4 +1,4 @@
-package com.masakapa.app.ui.activity;
+package com.smartwaste.app.ui.activity;
 
 import android.os.Bundle;
 import android.widget.Toast;
@@ -9,7 +9,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.masakapa.app.R;
+import com.smartwaste.app.R;
 
 public class MainActivity extends AppCompatActivity {
 

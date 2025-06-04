@@ -1,4 +1,4 @@
-package com.masakapa.app.ui.activity;
+package com.smartwaste.app.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.masakapa.app.R;
+import com.smartwaste.app.R;
 
 public class DashboardActivity extends AppCompatActivity {
 

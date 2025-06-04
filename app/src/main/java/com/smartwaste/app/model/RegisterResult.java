@@ -1,4 +1,4 @@
-package com.masakapa.app.model;
+package com.smartwaste.app.model;
 
 public class RegisterResult {
     private final boolean success;

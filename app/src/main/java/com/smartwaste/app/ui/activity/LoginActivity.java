@@ -1,4 +1,4 @@
-package com.masakapa.app.ui.activity;
+package com.smartwaste.app.ui.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,11 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.masakapa.app.R;
-import com.masakapa.app.ui.activity.DashboardActivity;
-import com.masakapa.app.ui.activity.RegisterActivity;
-import com.masakapa.app.viewmodel.AuthViewModel;
-import com.masakapa.app.utils.PrefKeys;
+import com.smartwaste.app.R;
+import com.smartwaste.app.viewmodel.AuthViewModel;
+import com.smartwaste.app.utils.PrefKeys;
 
 public class LoginActivity extends AppCompatActivity {
 

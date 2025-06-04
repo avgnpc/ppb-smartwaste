@@ -1,10 +1,10 @@
-package com.masakapa.app.services;
+package com.smartwaste.app.services;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
-import com.masakapa.app.model.User;
+import com.smartwaste.app.model.User;
 
 public class FirebaseService {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
