@@ -10,4 +10,5 @@
     <string name="password">Kata Sandi</string>
     <string name="confirm_password">Konfirmasi Kata Sandi</string>
     <string name="register_button">Daftar</string>
+    <string name="close_camera">Close Camera</string>
 </resources>

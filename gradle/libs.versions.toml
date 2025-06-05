@@ -1,9 +1,15 @@
 [versions]
-agp = "8.8.2"
+agp = "8.9.2"
+androidxAppcompatAppcompat = "1.6.1"
+androidxConstraintlayoutConstraintlayout3 = "2.1.4"
+cameraBom = "1.3.1"
+cameraBomVersion = "1.2.0"
+comGoogleAndroidMaterialMaterial4 = "1.9.0"
 facebookLogin = "18.0.3"
 firebaseAuth = "23.2.0"
 firebaseFirestore = "25.1.4"
 firebaseStorage = "21.0.1"
+guava = "32.1.3-android"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -15,13 +21,30 @@ playServices = "12.0.1"
 playServicesAuth = "21.3.0"
 lifecycle = "2.6.1"
 navigation = "2.7.7"
+cameraView = "1.4.2"
 
 
 [libraries]
+androidx-appcompat-appcompat-v161-x2 = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompatAppcompat" }
+androidx-camera-bom = { module = "androidx.camera:camera-bom", version.ref = "cameraBomVersion" }
+androidx-camera-bom-v131 = { module = "androidx.camera:camera-bom", version.ref = "cameraBom" }
+androidx-camera-camera-view = { module = "androidx.camera:camera-view" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2" }
+androidx-camera-core = { module = "androidx.camera:camera-core" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle" }
+androidx-camera-view = { module = "androidx.camera:camera-view" }
+androidx-camera2 = { module = "androidx.camera:camera2" }
+androidx-constraintlayout-constraintlayout-v214-x4 = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidxConstraintlayoutConstraintlayout3" }
+camera-core = { module = "androidx.camera:camera-core" }
+camera-extensions = { module = "androidx.camera:camera-extensions" }
+camera-lifecycle = { module = "androidx.camera:camera-lifecycle" }
+com-google-android-material-material-v190-x5 = { module = "com.google.android.material:material", version.ref = "comGoogleAndroidMaterialMaterial4" }
 facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookLogin" }
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -38,6 +61,7 @@ lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", 
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesAuth" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
