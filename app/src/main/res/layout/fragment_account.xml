@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Profile Photo -->
+        <ImageView
+            android:id="@+id/image_profile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_profile"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_background" />
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp" />
+
+        <!-- Location -->
+        <TextView
+            android:id="@+id/text_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#666666"
+            android:layout_gravity="center" />
+
+        <!-- Edit Button -->
+        <Button
+            android:id="@+id/button_edit_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubah Profil"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp" />
+
+        <!-- Menu List -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
+
+            <include layout="@layout/item_account_menu" />
+            <include layout="@layout/item_account_menu" />
+            <include layout="@layout/item_account_menu" />
+            <include layout="@layout/item_account_menu" />
+
+            <!-- Logout Button at the bottom -->
+            <Button
+                android:id="@+id/button_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Keluar"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_marginTop="24dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

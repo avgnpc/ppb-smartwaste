@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.smartwaste.app.model.User;
+import com.smartwaste.app.dto.FirestoreUserDTO;
 
 public class FirebaseService {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -39,17 +40,28 @@ public class FirebaseService {
     public void getUserById(String uid,
                             OnSuccessListener<User> success,
                             OnFailureListener failure) {
-        db.collection("users").document(uid)
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
                 .get()
-                .addOnSuccessListener(snapshot -> {
-                    if (snapshot.exists()) {
-                        User user = snapshot.toObject(User.class);
-                        success.onSuccess(user);
+                .addOnSuccessListener(documentSnapshot -> {
+                    FirestoreUserDTO dto = documentSnapshot.toObject(FirestoreUserDTO.class);
+                    if (dto != null) {
+                        success.onSuccess(dto.toUser());
                     } else {
                         failure.onFailure(new Exception("User not found"));
                     }
                 })
                 .addOnFailureListener(failure);
+    }
+
+
+    public String getCurrentUserId() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        } else {
+            return null;
+        }
     }
 
     public void logout() {
