@@ -77,9 +77,6 @@ dependencies {
     implementation (libs.com.google.android.material.material.v190.x5)
     implementation (libs.androidx.constraintlayout.constraintlayout.v214.x4)
 
-    // 1) BOM (Bill of Materials) for CameraX to keep versions in sync
-    implementation(libs.androidx.camera.bom.v131)
-
     // 2) Core CameraX modules (no versions needed—BOM supplies them)
     implementation ("androidx.camera:camera-camera2")        // for Camera2 support
     implementation ("androidx.camera:camera-lifecycle")      // ties camera lifecycle to ProcessCameraProvider
