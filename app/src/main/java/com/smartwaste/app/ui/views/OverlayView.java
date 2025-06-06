@@ -16,7 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple overlay view that draws bounding boxes and labels over a camera preview.
+ * OverlayView draws detection boxes on top of a CameraX PreviewView.
+ * It knows:
+ *  - imageWidth, imageHeight  (the resolution we sent to Roboflow, e.g. 1088×1088)
+ *  - viewWidth, viewHeight    (the on-screen size of the PreviewView)
+ * It then computes a uniform scale so the image fits into the view, plus offsets to center.
  */
 public class OverlayView extends View {
 
@@ -24,12 +28,21 @@ public class OverlayView extends View {
     private final Paint textPaint;
     private List<Prediction> predictions = new ArrayList<>();
 
+    // The resolution (in pixels) of the JPEG frames we send to Roboflow:
+    private float imageWidth  = 1f;
+    private float imageHeight = 1f;
+
+    // The actual on-screen size (in pixels) of the PreviewView (and thus this overlay):
+    private float viewWidth  = 1f;
+    private float viewHeight = 1f;
+
     public OverlayView(Context context) {
         this(context, null);
     }
 
     public OverlayView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
         boxPaint = new Paint();
         boxPaint.setColor(Color.RED);
         boxPaint.setStyle(Paint.Style.STROKE);
@@ -42,11 +55,33 @@ public class OverlayView extends View {
     }
 
     /**
-     * Update the list of predictions and redraw.
+     * Call this once (or whenever your frame resolution changes) to tell the overlay
+     * the size (width, height) of the image you send to Roboflow.
+     * E.g. setImageSize(1088, 1088).
+     */
+    public void setImageSize(int w, int h) {
+        this.imageWidth = (float) w;
+        this.imageHeight = (float) h;
+        invalidate();
+    }
+
+    /**
+     * Call this after your PreviewView has been laid out, to tell the overlay
+     * its on-screen size (the same as the PreviewView's width/height).
+     */
+    public void setViewSize(int w, int h) {
+        this.viewWidth = (float) w;
+        this.viewHeight = (float) h;
+        invalidate();
+    }
+
+    /**
+     * Provide a new list of predictions (x, y, width, height in image-space, plus label/confidence).
+     * Predictions.x/y/width/height must be in the same coordinate system as imageWidth/imageHeight.
      */
     public void setPredictions(List<Prediction> newPredictions) {
         this.predictions = new ArrayList<>(newPredictions);
-        postInvalidate(); // Triggers onDraw on UI thread
+        postInvalidate();  // redraw on UI thread
     }
 
     @Override
@@ -54,26 +89,40 @@ public class OverlayView extends View {
         super.onDraw(canvas);
         if (predictions == null || predictions.isEmpty()) return;
 
-        float viewWidth = getWidth();
-        float viewHeight = getHeight();
+        // 1) Compute uniform scale so that image (imageWidth×imageHeight) fits into view (viewWidth×viewHeight)
+        float scaleX = viewWidth  / imageWidth;
+        float scaleY = viewHeight / imageHeight;
+        float scale  = Math.min(scaleX, scaleY);
 
+        // 2) Compute the scaled image size
+        float scaledImageWidth  = imageWidth  * scale;
+        float scaledImageHeight = imageHeight * scale;
+
+        // 3) Compute offsets to center the scaled image in the view
+        float offsetX = (viewWidth  - scaledImageWidth)  / 2f;
+        float offsetY = (viewHeight - scaledImageHeight) / 2f;
+
+        // 4) Draw each prediction
         for (Prediction p : predictions) {
-            // Roboflow's API returns bounding boxes in pixel coordinates relative to the image we sent.
-            // But if we sent full 640×480 or similar camera frames, we can directly draw using those coords.
-            // (If using normalized coordinates [0..1], multiply by viewWidth/viewHeight.)
+            // a) Convert center-based (x, y, w, h) in image space → (left, top, right, bottom)
+            float left   = p.x - (p.width  / 2f);
+            float top    = p.y - (p.height / 2f);
+            float right  = p.x + (p.width  / 2f);
+            float bottom = p.y + (p.height / 2f);
 
-            // Compute rectangle corners from center x,y,w,h:
-            float left = p.x - p.width / 2f;
-            float top = p.y - p.height / 2f;
-            float right = p.x + p.width / 2f;
-            float bottom = p.y + p.height / 2f;
+            // b) Scale those coordinates into view space and add offset to center
+            float leftV   = left   * scale + offsetX;
+            float topV    = top    * scale + offsetY;
+            float rightV  = right  * scale + offsetX;
+            float bottomV = bottom * scale + offsetY;
 
-            RectF rect = new RectF(left, top, right, bottom);
+            // c) Draw the bounding box
+            RectF rect = new RectF(leftV, topV, rightV, bottomV);
             canvas.drawRect(rect, boxPaint);
 
-            // Draw label & confidence just above the box:
+            // d) Draw the label above the box
             String text = String.format("%s: %.1f%%", p.label, p.confidence * 100f);
-            canvas.drawText(text, left, top - 10f, textPaint);
+            canvas.drawText(text, leftV, topV - 10f, textPaint);
         }
     }
 }

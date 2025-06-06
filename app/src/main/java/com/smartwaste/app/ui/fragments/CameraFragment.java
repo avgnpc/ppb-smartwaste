@@ -3,6 +3,7 @@ package com.smartwaste.app.ui.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
@@ -40,11 +40,10 @@ public class CameraFragment extends Fragment {
     private ProcessCameraProvider cameraProvider;
     private CameraViewModel viewModel;
 
-    // Roboflow API info (replace with your values!)
-    //  ─── Get these from Roboflow “Deploy → Inference” panel.
+    // Roboflow API info (replace with your real MODEL URL and API key)
     private static final String ROBOFLOW_API_KEY = "dK43MuIseHtrwhoCzlyL";
     private static final String ROBOFLOW_MODEL_URL =
-            "https://serverless.roboflow.com/plastic-recyclable-detection/2";
+            "https://serverless.roboflow.com/trash-detection-on-ocean-surface/15";
 
     @Override
     public View onCreateView(
@@ -56,12 +55,25 @@ public class CameraFragment extends Fragment {
         previewView = root.findViewById(R.id.preview_view);
         overlayView = root.findViewById(R.id.overlay_view);
 
+        // 1) Tell overlay the JPEG resolution that RoboflowAnalyzer will send
+        overlayView.setImageSize(1088, 1088);
+
+        // 2) Once PreviewView is laid out, capture its actual on-screen size
+        previewView.post(() -> {
+            int pvW = previewView.getWidth();
+            int pvH = previewView.getHeight();
+            Log.d("CameraFragment", "PreviewView size: " + pvW + "×" + pvH);
+
+            // 3) Pass that to overlay, so it can compute scale + letterbox
+            overlayView.setViewSize(pvW, pvH);
+        });
+
         // Close button: pop back to previous screen
         root.findViewById(R.id.btn_close_camera).setOnClickListener(v ->
                 requireActivity().onBackPressed()
         );
 
-        // Init ViewModel (if you want toast messages if permission is denied)
+        // Init ViewModel for permission messages
         viewModel = new ViewModelProvider(requireActivity()).get(CameraViewModel.class);
 
         return root;
@@ -70,7 +82,7 @@ public class CameraFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // 1) Request camera permission if not already granted
+        // 1) Request camera permission if needed
         if (ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera(); // Permission already granted
@@ -126,13 +138,19 @@ public class CameraFragment extends Fragment {
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
+                // 3.1a) Ensure the preview is letterboxed (no cropping):
+                previewView.setImplementationMode(
+                        PreviewView.ImplementationMode.COMPATIBLE
+                );
+
                 // 3.2) ImageAnalysis use case
+                //     Set target resolution to 1088×1088 so frames are square
                 imageAnalysis = new ImageAnalysis.Builder()
-                        .setTargetResolution(new Size(640, 480))
+                        .setTargetResolution(new Size(1088, 1088))
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
 
-                // 3.3) Set our custom analyzer (defined below)
+                // 3.3) Assign our custom analyzer
                 imageAnalysis.setAnalyzer(
                         cameraExecutor,
                         new RoboflowAnalyzer(
