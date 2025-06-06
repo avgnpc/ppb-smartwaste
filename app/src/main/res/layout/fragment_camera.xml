@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 1) CameraX PreviewView for live feed -->
     <androidx.camera.view.PreviewView
         android:id="@+id/preview_view"
         android:layout_width="0dp"
@@ -15,18 +16,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- 2️⃣2: Optional overlay for drawing bounding boxes later -->
+    <!-- 2) Overlay for drawing bounding boxes -->
     <com.smartwaste.app.ui.views.OverlayView
         android:id="@+id/overlay_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@android:color/transparent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 2️⃣3: Back button (optional) -->
+    <!-- 3) Close/back button -->
     <ImageButton
         android:id="@+id/btn_close_camera"
         android:layout_width="40dp"

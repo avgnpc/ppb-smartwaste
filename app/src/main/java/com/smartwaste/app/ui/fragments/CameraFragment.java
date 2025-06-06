@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.smartwaste.app.R;
+import com.smartwaste.app.analysis.RoboflowAnalyzer;
 import com.smartwaste.app.ui.views.OverlayView;
 import com.smartwaste.app.viewmodel.CameraViewModel;
 
@@ -34,29 +35,33 @@ public class CameraFragment extends Fragment {
 
     private PreviewView previewView;
     private OverlayView overlayView;
+    private ExecutorService cameraExecutor;
     private ImageAnalysis imageAnalysis;
     private ProcessCameraProvider cameraProvider;
-    private CameraSelector cameraSelector;
-    private ExecutorService cameraExecutor;
-
     private CameraViewModel viewModel;
+
+    // Roboflow API info (replace with your values!)
+    //  ─── Get these from Roboflow “Deploy → Inference” panel.
+    private static final String ROBOFLOW_API_KEY = "dK43MuIseHtrwhoCzlyL";
+    private static final String ROBOFLOW_MODEL_URL =
+            "https://serverless.roboflow.com/plastic-recyclable-detection/2";
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_camera, container, false);
 
+        View root = inflater.inflate(R.layout.fragment_camera, container, false);
         previewView = root.findViewById(R.id.preview_view);
         overlayView = root.findViewById(R.id.overlay_view);
 
-        // Close button: simply pop back to previous screen
+        // Close button: pop back to previous screen
         root.findViewById(R.id.btn_close_camera).setOnClickListener(v ->
                 requireActivity().onBackPressed()
         );
 
-        // Initialize ViewModel (for optional toast messages)
+        // Init ViewModel (if you want toast messages if permission is denied)
         viewModel = new ViewModelProvider(requireActivity()).get(CameraViewModel.class);
 
         return root;
@@ -65,14 +70,11 @@ public class CameraFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        // 1) Check if CAMERA permission is already granted
+        // 1) Request camera permission if not already granted
         if (ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            // Already granted → start CameraX
-            startCamera();
+            startCamera(); // Permission already granted
         } else {
-            // Not granted → request permission
             requestPermissions(
                     new String[]{Manifest.permission.CAMERA},
                     REQUEST_CAMERA_PERMISSION
@@ -83,6 +85,7 @@ public class CameraFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // Shutdown the background executor
         if (cameraExecutor != null) {
             cameraExecutor.shutdown();
         }
@@ -96,12 +99,11 @@ public class CameraFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            // If user granted CAMERA:
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 viewModel.onCameraPermissionGranted();
                 startCamera();
             } else {
-                // User denied CAMERA
                 viewModel.onCameraPermissionDenied();
                 Toast.makeText(requireContext(),
                         "Camera permission denied", Toast.LENGTH_SHORT).show();
@@ -109,7 +111,7 @@ public class CameraFragment extends Fragment {
         }
     }
 
-    // 3) Bind CameraX Preview + ImageAnalysis
+    // 3) Start CameraX preview + ImageAnalysis
     private void startCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor();
 
@@ -121,24 +123,31 @@ public class CameraFragment extends Fragment {
                 cameraProvider = cameraProviderFuture.get();
 
                 // 3.1) Preview use case
-                Preview preview = new Preview.Builder()
-                        .build();
+                Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                // 3.2) ImageAnalysis use case (for frame-by-frame inference)
+                // 3.2) ImageAnalysis use case
                 imageAnalysis = new ImageAnalysis.Builder()
                         .setTargetResolution(new Size(640, 480))
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
-                imageAnalysis.setAnalyzer(cameraExecutor, this::analyzeFrame);
 
-                // 3.3) Select back camera
-                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+                // 3.3) Set our custom analyzer (defined below)
+                imageAnalysis.setAnalyzer(
+                        cameraExecutor,
+                        new RoboflowAnalyzer(
+                                requireContext(),
+                                overlayView,
+                                ROBOFLOW_MODEL_URL,
+                                ROBOFLOW_API_KEY
+                        )
+                );
 
-                // 3.4) Unbind previous use cases (if any) before rebinding
+                // 3.4) Select back camera
+                CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+
+                // 3.5) Bind to lifecycle
                 cameraProvider.unbindAll();
-
-                // 3.5) Bind Preview + Analysis to lifecycle
                 cameraProvider.bindToLifecycle(
                         getViewLifecycleOwner(),
                         cameraSelector,
@@ -149,12 +158,5 @@ public class CameraFragment extends Fragment {
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(requireContext()));
-    }
-
-    // 4) Called for every camera frame; close it after you feed it to your model
-    private void analyzeFrame(@NonNull ImageProxy image) {
-        // TODO: Convert ImageProxy → Bitmap/ByteBuffer → run YOLO inference → overlayView.setPredictions(...)
-
-        image.close();
     }
 }

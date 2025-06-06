@@ -78,14 +78,22 @@ dependencies {
     implementation (libs.androidx.constraintlayout.constraintlayout.v214.x4)
 
     // 2) Core CameraX modules (no versions needed—BOM supplies them)
-    implementation ("androidx.camera:camera-camera2")        // for Camera2 support
-    implementation ("androidx.camera:camera-lifecycle")      // ties camera lifecycle to ProcessCameraProvider
-    implementation ("androidx.camera:camera-view")           // for PreviewView
+    implementation(libs.androidx.camera.camera.core)
+    implementation (libs.camera.camera2)        // for Camera2 support
+    implementation (libs.androidx.camera.camera.lifecycle)      // ties camera lifecycle to ProcessCameraProvider
+    implementation (libs.androidx.camera.camera.view2)           // for PreviewView
 
     // 3) Optional: for built-in extensions (Portrait, Night, HDR, etc.)
-    implementation ("androidx.camera:camera-extensions")
+    implementation (libs.androidx.camera.camera.extensions)
 
     // 4) Guava (for ListenableFuture used by CameraX)
-    implementation ("com.google.guava:guava:31.1-android")
+    implementation (libs.guava.v311android)
 
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.task.vision)
+
+    implementation (libs.okhttp)
+    implementation (libs.logging.interceptor)
+    implementation (libs.gson)
 }
