@@ -1,6 +1,8 @@
 package com.smartwaste.app.analysis;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -12,8 +14,11 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
+import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -36,6 +41,20 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import android.location.Location;
+import android.location.LocationManager;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
+
+
 /**
  * Analyzer that sends each camera frame (rotated upright) to Roboflow's hosted inference API.
  */
@@ -50,6 +69,8 @@ public class RoboflowAnalyzer implements ImageAnalysis.Analyzer {
     private final OkHttpClient httpClient;
     private final Handler mainHandler;
     private final Gson gson = new Gson();
+    private final FusedLocationProviderClient fusedLocationClient;
+
 
     public RoboflowAnalyzer(Context context,
                             OverlayView overlayView,
@@ -67,8 +88,10 @@ public class RoboflowAnalyzer implements ImageAnalysis.Analyzer {
 
         // Handler to post results back to main/UI thread
         this.mainHandler = new Handler(Looper.getMainLooper());
+        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
+    @OptIn(markerClass = ExperimentalGetImage.class)
     @Override
     public void analyze(@NonNull ImageProxy imageProxy) {
         Image mediaImage = imageProxy.getImage();
@@ -142,7 +165,11 @@ public class RoboflowAnalyzer implements ImageAnalysis.Analyzer {
                     }
 
                     // 8) Post predictions to overlay on the main thread
-                    mainHandler.post(() -> overlayView.setPredictions(preds));
+                    mainHandler.post(() -> {
+                        overlayView.setPredictions(preds);
+                        captureMetadataAndGenerateJson(preds);
+                    });
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -152,6 +179,61 @@ public class RoboflowAnalyzer implements ImageAnalysis.Analyzer {
                 }
             }
         });
+    }
+
+    private void captureMetadataAndGenerateJson(List<Prediction> predictions) {
+        // Step 1: Get timestamp
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                .format(new Date());
+
+        // Step 2: Check location permission first
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.w("RoboflowJSON", "Location permission not granted");
+            return; // Exit early if permission is not granted
+        }
+
+        // Step 3: Get current location
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        JSONObject resultJson = new JSONObject();
+                        try {
+                            resultJson.put("timestamp", timestamp);
+
+                            JSONObject locationJson = new JSONObject();
+                            locationJson.put("latitude", location.getLatitude());
+                            locationJson.put("longitude", location.getLongitude());
+                            resultJson.put("location", locationJson);
+
+                            // Count trash items
+                            Map<String, Integer> trashCounts = new HashMap<>();
+                            for (Prediction p : predictions) {
+                                trashCounts.put(p.label, trashCounts.getOrDefault(p.label, 0) + 1);
+                            }
+
+                            JSONArray trashArray = new JSONArray();
+                            for (Map.Entry<String, Integer> entry : trashCounts.entrySet()) {
+                                JSONObject item = new JSONObject();
+                                item.put("class", entry.getKey());
+                                item.put("count", entry.getValue());
+                                trashArray.put(item);
+                            }
+
+                            resultJson.put("detections", trashArray);
+
+                            Log.d("RoboflowJSON", resultJson.toString(2)); // pretty print
+
+                            // TODO: save to file or send to API
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.w("RoboflowJSON", "Location not available.");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("RoboflowJSON", "Location fetch failed", e));
     }
 
     /**

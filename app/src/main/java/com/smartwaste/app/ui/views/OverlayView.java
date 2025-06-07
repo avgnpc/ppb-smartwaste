@@ -12,8 +12,12 @@ import androidx.annotation.Nullable;
 
 import com.smartwaste.app.model.Prediction;
 
+import org.tensorflow.lite.task.vision.detector.Detection;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * OverlayView draws detection boxes on top of a CameraX PreviewView.
@@ -82,6 +86,15 @@ public class OverlayView extends View {
     public void setPredictions(List<Prediction> newPredictions) {
         this.predictions = new ArrayList<>(newPredictions);
         postInvalidate();  // redraw on UI thread
+    }
+
+    public Map<String, Integer> getDetectionSummary() {
+        Map<String, Integer> counts = new HashMap<>();
+        for (Prediction p : predictions) {
+            String label = p.label;
+            counts.put(label, counts.getOrDefault(label, 0) + 1);
+        }
+        return counts;
     }
 
     @Override
