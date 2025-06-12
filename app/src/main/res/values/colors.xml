@@ -13,4 +13,6 @@
     <color name="colorOnPrimary">#FFFFFF</color>       <!-- Text/icons on primary surfaces -->
     <color name="colorOnBackground">#103F3F</color>    <!-- Main text color on background -->
     <color name="colorError">#D32F2F</color>           <!-- Error states -->
+    <color name="smart_green">#06B24B</color>          <!-- Login anda Register Button -->
+    <color name="dark_gray_text">#444444</color> <!-- Abu-abu gelap -->
 </resources>

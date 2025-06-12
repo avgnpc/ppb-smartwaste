@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText firstNameEdit, lastNameEdit, emailEdit, birthDateEdit, passwordEdit, confirmPasswordEdit;
     private Button registerBtn;
     private TextView loginLink;
+    private ImageButton backButton;
 
     private final Calendar calendar = Calendar.getInstance();
     private AuthViewModel authViewModel;
@@ -41,10 +43,12 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // ViewModel
         authViewModel = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
                 .get(AuthViewModel.class);
 
+        // View Binding
         firstNameEdit = findViewById(R.id.first_name);
         lastNameEdit = findViewById(R.id.last_name);
         emailEdit = findViewById(R.id.email);
@@ -53,13 +57,19 @@ public class RegisterActivity extends AppCompatActivity {
         confirmPasswordEdit = findViewById(R.id.confirm_password);
         registerBtn = findViewById(R.id.register_btn);
         loginLink = findViewById(R.id.link_login);
+        backButton = findViewById(R.id.back_button);
 
+        // Actions
         birthDateEdit.setOnClickListener(v -> showDatePicker());
         registerBtn.setOnClickListener(v -> attemptRegister());
         loginLink.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
+        backButton.setOnClickListener(v -> {
+            // Back button behavior: go to LoginActivity
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
 
         observeViewModel();
-
         checkLocationPermissionOrFetchCity();
     }
 
@@ -121,8 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         authViewModel.getUserCity().observe(this, city -> {
-            // Optional: show user city for debugging or logging, but no UI display needed
-            // Toast.makeText(this, "Lokasi terdeteksi: " + city, Toast.LENGTH_SHORT).show();
+            // Optional: show user city for debugging or logging
         });
     }
 
