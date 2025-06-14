@@ -20,9 +20,9 @@
     <!-- ───────────────────────────────────────────────────────────── -->
     <fragment
         android:id="@+id/exploreFragment"
-        android:name="com.smartwaste.app.ui.fragments.ExploreFragment"
+        android:name="com.smartwaste.app.ui.fragments.CaptureListFragment"
         android:label="Explore"
-        tools:layout="@layout/fragment_basket" />
+        tools:layout="@layout/fragment_capture_list" />
 
     <!-- ───────────────────────────────────────────────────────────── -->
     <!-- 3) HistoryFragment (Favorites)                                 -->
@@ -40,7 +40,7 @@
         android:id="@+id/profileFragment"
         android:name="com.smartwaste.app.ui.fragments.AccountFragment"
         android:label="Account"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_account" />
 
     <!-- ───────────────────────────────────────────────────────────── -->
     <!-- 5) CameraFragment (new destination for CameraX preview)        -->

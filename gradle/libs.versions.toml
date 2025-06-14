@@ -6,11 +6,13 @@ cameraBom = "1.3.1"
 cameraBomVersion = "1.2.0"
 cameraCore = "1.4.2"
 comGoogleAndroidMaterialMaterial4 = "1.9.0"
+compiler = "4.15.1"
 converterGson = "2.9.0"
 facebookLogin = "18.0.3"
 firebaseAuth = "23.2.0"
 firebaseFirestore = "25.1.4"
 firebaseStorage = "21.0.1"
+glide = "4.15.1"
 gson = "2.10.1"
 guava = "32.1.3-android"
 guavaVersion = "31.1-android"
@@ -62,11 +64,13 @@ camera-core = { module = "androidx.camera:camera-core" }
 camera-extensions = { module = "androidx.camera:camera-extensions" }
 camera-lifecycle = { module = "androidx.camera:camera-lifecycle" }
 com-google-android-material-material-v190-x5 = { module = "com.google.android.material:material", version.ref = "comGoogleAndroidMaterialMaterial4" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookLogin" }
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guava-v311android = { module = "com.google.guava:guava", version.ref = "guavaVersion" }
