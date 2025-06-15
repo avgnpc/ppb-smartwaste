@@ -1,31 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- 1) HomeFragment (start destination)                          -->
+    <!-- ───────────────────────────────────────────────────────────── -->
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.smartwaste.app.ui.fragments.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- 2) ExploreFragment                                            -->
+    <!-- ───────────────────────────────────────────────────────────── -->
     <fragment
         android:id="@+id/exploreFragment"
         android:name="com.smartwaste.app.ui.fragments.ExploreFragment"
         android:label="Explore"
         tools:layout="@layout/fragment_basket" />
 
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- 3) HistoryFragment (Favorites)                                 -->
+    <!-- ───────────────────────────────────────────────────────────── -->
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.smartwaste.app.ui.fragments.HistoryFragment"
         android:label="History"
         tools:layout="@layout/fragment_favorites" />
 
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- 4) AccountFragment (Profile)                                    -->
+    <!-- ───────────────────────────────────────────────────────────── -->
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.smartwaste.app.ui.fragments.AccountFragment"
         android:label="Account"
         tools:layout="@layout/fragment_profile" />
+
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <!-- 5) CameraFragment (new destination for CameraX preview)        -->
+    <!-- ───────────────────────────────────────────────────────────── -->
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.smartwaste.app.ui.fragments.CameraFragment"
+        android:label="Camera"
+        tools:layout="@layout/fragment_camera" />
+
 </navigation>

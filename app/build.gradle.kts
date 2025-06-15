@@ -66,9 +66,34 @@ dependencies {
 
     // Facebook Login
     implementation(libs.facebook.login)
+    implementation(libs.camera.view)
 
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation (libs.androidx.appcompat.appcompat.v161.x2)
+    implementation (libs.com.google.android.material.material.v190.x5)
+    implementation (libs.androidx.constraintlayout.constraintlayout.v214.x4)
+
+    // 2) Core CameraX modules (no versions needed—BOM supplies them)
+    implementation(libs.androidx.camera.camera.core)
+    implementation (libs.camera.camera2)        // for Camera2 support
+    implementation (libs.androidx.camera.camera.lifecycle)      // ties camera lifecycle to ProcessCameraProvider
+    implementation (libs.androidx.camera.camera.view2)           // for PreviewView
+
+    // 3) Optional: for built-in extensions (Portrait, Night, HDR, etc.)
+    implementation (libs.androidx.camera.camera.extensions)
+
+    // 4) Guava (for ListenableFuture used by CameraX)
+    implementation (libs.guava.v311android)
+
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.task.vision)
+
+    implementation (libs.okhttp)
+    implementation (libs.logging.interceptor)
+    implementation (libs.gson)
 }
