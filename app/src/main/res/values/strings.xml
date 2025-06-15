@@ -11,4 +11,9 @@
     <string name="confirm_password">Konfirmasi Kata Sandi</string>
     <string name="register_button">Daftar</string>
     <string name="close_camera">Close Camera</string>
+    <string-array name="filter_dibersihkan">
+        <item>Semua</item>
+        <item>Dibersihkan</item>
+        <item>Belum Dibersihkan</item>
+    </string-array>
 </resources>

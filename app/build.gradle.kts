@@ -96,4 +96,18 @@ dependencies {
     implementation (libs.okhttp)
     implementation (libs.logging.interceptor)
     implementation (libs.gson)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    implementation (libs.volley)
+    implementation (libs.json)
+
+    implementation (libs.imagekit.android)
+
+    implementation(libs.okhttp)
+
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
+
 }

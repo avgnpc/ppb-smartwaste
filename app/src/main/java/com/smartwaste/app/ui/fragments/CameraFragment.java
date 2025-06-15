@@ -60,6 +60,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.smartwaste.app.services.FirebaseService;
+import com.smartwaste.app.services.ImageKitService;
+import com.smartwaste.app.repository.UserRepository;
+import org.json.JSONArray;
+
+import java.util.Base64;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 public class CameraFragment extends Fragment {
     private static final int REQUEST_CAMERA_PERMISSION = 1001;
 
@@ -117,7 +126,7 @@ public class CameraFragment extends Fragment {
     }
 
     private void captureSnapshot() {
-        if (isCapturing) return; // Prevent multiple captures
+        if (isCapturing) return;
         isCapturing = true;
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -132,49 +141,86 @@ public class CameraFragment extends Fragment {
         }
 
         imageAnalysis.setAnalyzer(cameraExecutor, image -> {
-
             imageAnalysis.clearAnalyzer();
 
-            // 1) Get current timestamp
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-                    .format(new Date());
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss", Locale.getDefault()).format(new Date());
 
-            // 2) Get geolocation
             getCurrentLocation((latitude, longitude) -> {
-                // 3) Convert image to Bitmap (cropped to square)
-                Bitmap bitmap = imageToBitmap(image);  // Implement this helper
+                Bitmap bitmap = imageToBitmap(image);
+                Map<String, Integer> trashCounts = overlayView.getDetectionSummary();
 
-                // 4) Get detection results from overlay
-                Map<String, Integer> trashCounts = overlayView.getDetectionSummary(); // Implement this method
+                UserRepository userRepository = new UserRepository();
+                userRepository.getCurrentUser(user -> {
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("timestamp", timestamp);
 
-                // 5) Build JSON
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("timestamp", timestamp);
+                        JSONObject locationObj = new JSONObject();
+                        locationObj.put("latitude", latitude);
+                        locationObj.put("longitude", longitude);
+                        json.put("location", locationObj);
 
-                    JSONObject locationObj = new JSONObject();
-                    locationObj.put("latitude", latitude);
-                    locationObj.put("longitude", longitude);
-                    json.put("location", locationObj);
+                        JSONArray detectionsArray = new JSONArray();
+                        for (Map.Entry<String, Integer> entry : trashCounts.entrySet()) {
+                            JSONObject detectionObj = new JSONObject();
+                            detectionObj.put("class", entry.getKey());
+                            detectionObj.put("count", entry.getValue());
+                            detectionsArray.put(detectionObj);
+                        }
+                        json.put("detections", detectionsArray);
 
-                    org.json.JSONArray detectionsArray = new org.json.JSONArray();
-                    for (Map.Entry<String, Integer> entry : trashCounts.entrySet()) {
-                        JSONObject detectionObj = new JSONObject();
-                        detectionObj.put("class", entry.getKey());
-                        detectionObj.put("count", entry.getValue());
-                        detectionsArray.put(detectionObj);
+                        json.put("user_id", user.getUid());
+                        json.put("dibersihkan", false);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        isCapturing = false;
+                        image.close();
+                        return;
                     }
-                    json.put("detections", detectionsArray);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-                // 6) Save image and JSON to storage / log it
-                saveImage(bitmap, timestamp); // Implement this
-                saveJsonToDownloads(json, timestamp);
-                Log.d("CaptureData", json.toString());
-                isCapturing = false;
-                image.close();
+                    // Save locally as backup (optional)
+                    saveImage(bitmap, timestamp);
+                    saveJsonToDownloads(json, timestamp);
+
+                    // Upload using direct REST call with OkHttp
+                    ImageKitService uploader = new ImageKitService();
+                    String fileName = "capture_" + timestamp + ".jpg";
+
+                    uploader.uploadImage(bitmap, fileName, new ImageKitService.UploadCallback() {
+                        @Override
+                        public void onSuccess(String imageUrl) {
+                            FirebaseService firebaseService = new FirebaseService();
+                            firebaseService.saveCaptureData(json, imageUrl,
+                                    unused -> {
+                                        Log.d("Upload", "Uploaded to Firestore");
+                                        Toast.makeText(requireContext(), "Data uploaded", Toast.LENGTH_SHORT).show();
+                                        isCapturing = false;
+                                    },
+                                    error -> {
+                                        Log.e("Upload", "Failed Firestore upload", error);
+                                        Toast.makeText(requireContext(), "Failed upload to Firestore", Toast.LENGTH_SHORT).show();
+                                        isCapturing = false;
+                                    }
+                            );
+                            image.close();
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e("Upload", "Failed ImageKit upload", e);
+                            Toast.makeText(requireContext(), "Failed upload to ImageKit", Toast.LENGTH_SHORT).show();
+                            isCapturing = false;
+                            image.close();
+                        }
+                    });
+
+                }, error -> {
+                    Log.e("User", "Failed to get user", error);
+                    Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+                    isCapturing = false;
+                    image.close();
+                });
             });
         });
     }
