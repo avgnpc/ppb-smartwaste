@@ -126,4 +126,33 @@ public class CaptureRepository {
                 })
                 .addOnFailureListener(onFailure);
     }
+
+    public void getCaptureById(String captureId,
+                               OnSuccessListener<Capture> onSuccess,
+                               OnFailureListener onFailure) {
+        if (captureId == null || captureId.isEmpty()) {
+            onFailure.onFailure(new IllegalArgumentException("Capture ID is null or empty"));
+            return;
+        }
+
+        capturesRef.document(captureId)
+                .get(Source.SERVER) // ensure it always fetches from Firestore, not local cache
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        Capture capture = doc.toObject(Capture.class);
+                        if (capture != null) {
+                            capture.setId(doc.getId());
+                            capture.setSnapshot(doc);
+                            onSuccess.onSuccess(capture);
+                        } else {
+                            onFailure.onFailure(new Exception("Document exists but couldn't parse Capture"));
+                        }
+                    } else {
+                        onFailure.onFailure(new Exception("Capture not found for ID: " + captureId));
+                    }
+                })
+                .addOnFailureListener(onFailure);
+    }
+
+
 }
