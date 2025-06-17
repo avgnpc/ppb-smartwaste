@@ -22,7 +22,13 @@
         android:id="@+id/exploreFragment"
         android:name="com.smartwaste.app.ui.fragments.CaptureListFragment"
         android:label="Explore"
-        tools:layout="@layout/fragment_capture_list" />
+        tools:layout="@layout/fragment_capture_list">
+
+        <!-- Navigate to CaptureDetailFragment -->
+        <action
+            android:id="@+id/action_exploreFragment_to_captureDetailFragment"
+            app:destination="@id/captureDetailFragment" />
+    </fragment>
 
     <!-- ───────────────────────────────────────────────────────────── -->
     <!-- 3) HistoryFragment (Favorites)                                 -->
@@ -50,5 +56,16 @@
         android:name="com.smartwaste.app.ui.fragments.CameraFragment"
         android:label="Camera"
         tools:layout="@layout/fragment_camera" />
+
+    <fragment
+        android:id="@+id/captureDetailFragment"
+        android:name="com.smartwaste.app.ui.fragments.CaptureDetailFragment"
+        android:label="Capture Detail"
+        tools:layout="@layout/fragment_capture_detail">
+        <argument
+            android:name="captureId"
+            app:argType="string" />
+    </fragment>
+
 
 </navigation>

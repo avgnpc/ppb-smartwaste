@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +57,23 @@ public class CaptureListFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         filterSpinner = view.findViewById(R.id.spinnerFilter);
 
+        adapter = new CaptureAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(capture -> {
+            NavController navController = NavHostFragment.findNavController(this);
+            Bundle bundle = new Bundle();
+            bundle.putString("captureId", capture.getId());
+            navController.navigate(R.id.action_exploreFragment_to_captureDetailFragment, bundle);
+        });
+
+        // Observe only the current user's captures
+        viewModel.getUserCaptures().observe(getViewLifecycleOwner(), captures -> {
+            adapter.submitList(captures != null ? new ArrayList<>(captures) : new ArrayList<>());
+            progressBar.setVisibility(View.GONE);
+        });
+
         setupFilterSpinner();
         setupRecyclerView();
 
@@ -96,10 +115,6 @@ public class CaptureListFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        adapter = new CaptureAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(adapter);
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
@@ -161,4 +176,3 @@ public class CaptureListFragment extends Fragment {
                 });
     }
 }
-

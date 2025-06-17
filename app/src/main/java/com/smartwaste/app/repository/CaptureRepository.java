@@ -85,7 +85,19 @@ public class CaptureRepository {
                                      OnSuccessListener<List<Capture>> onSuccess,
                                      OnFailureListener onFailure) {
 
-        Query query = capturesRef.orderBy("timestamp", Query.Direction.DESCENDING).limit(limit);
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                : null;
+
+        if (currentUserId == null) {
+            onSuccess.onSuccess(new ArrayList<>());
+            return;
+        }
+
+        Query query = capturesRef
+                .whereEqualTo("user_id", currentUserId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(limit);
 
         if (dibersihkanFilter != null) {
             query = query.whereEqualTo("dibersihkan", dibersihkanFilter);
@@ -114,4 +126,33 @@ public class CaptureRepository {
                 })
                 .addOnFailureListener(onFailure);
     }
+
+    public void getCaptureById(String captureId,
+                               OnSuccessListener<Capture> onSuccess,
+                               OnFailureListener onFailure) {
+        if (captureId == null || captureId.isEmpty()) {
+            onFailure.onFailure(new IllegalArgumentException("Capture ID is null or empty"));
+            return;
+        }
+
+        capturesRef.document(captureId)
+                .get(Source.SERVER) // ensure it always fetches from Firestore, not local cache
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        Capture capture = doc.toObject(Capture.class);
+                        if (capture != null) {
+                            capture.setId(doc.getId());
+                            capture.setSnapshot(doc);
+                            onSuccess.onSuccess(capture);
+                        } else {
+                            onFailure.onFailure(new Exception("Document exists but couldn't parse Capture"));
+                        }
+                    } else {
+                        onFailure.onFailure(new Exception("Capture not found for ID: " + captureId));
+                    }
+                })
+                .addOnFailureListener(onFailure);
+    }
+
+
 }
