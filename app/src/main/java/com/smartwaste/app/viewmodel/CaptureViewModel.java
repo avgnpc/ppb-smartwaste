@@ -22,6 +22,7 @@ public class CaptureViewModel extends ViewModel {
     private final MutableLiveData<List<Capture>> pagedCaptures = new MutableLiveData<>(new ArrayList<>());
     private DocumentSnapshot lastVisible = null;
     private boolean isLoading = false;
+    private final LiveData<List<Capture>> userCaptures = repository.getCapturesForCurrentUser();
 
     private Boolean filterDibersihkan = null;
     private String filterStartDate = null;

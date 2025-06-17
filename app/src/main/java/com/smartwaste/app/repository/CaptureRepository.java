@@ -85,7 +85,19 @@ public class CaptureRepository {
                                      OnSuccessListener<List<Capture>> onSuccess,
                                      OnFailureListener onFailure) {
 
-        Query query = capturesRef.orderBy("timestamp", Query.Direction.DESCENDING).limit(limit);
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                : null;
+
+        if (currentUserId == null) {
+            onSuccess.onSuccess(new ArrayList<>());
+            return;
+        }
+
+        Query query = capturesRef
+                .whereEqualTo("user_id", currentUserId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(limit);
 
         if (dibersihkanFilter != null) {
             query = query.whereEqualTo("dibersihkan", dibersihkanFilter);

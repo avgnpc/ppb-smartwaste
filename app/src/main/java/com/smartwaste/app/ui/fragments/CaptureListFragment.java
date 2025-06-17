@@ -55,6 +55,16 @@ public class CaptureListFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         filterSpinner = view.findViewById(R.id.spinnerFilter);
 
+        adapter = new CaptureAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(adapter);
+
+        // Observe only the current user's captures
+        viewModel.getUserCaptures().observe(getViewLifecycleOwner(), captures -> {
+            adapter.submitList(captures != null ? new ArrayList<>(captures) : new ArrayList<>());
+            progressBar.setVisibility(View.GONE);
+        });
+
         setupFilterSpinner();
         setupRecyclerView();
 
