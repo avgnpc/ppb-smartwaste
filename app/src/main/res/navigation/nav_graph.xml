@@ -15,6 +15,10 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
+    <action
+        android:id="@+id/action_homeFragment_to_captureDetailFragment"
+        app:destination="@id/captureDetailFragment" />
+
     <!-- ───────────────────────────────────────────────────────────── -->
     <!-- 2) ExploreFragment                                            -->
     <!-- ───────────────────────────────────────────────────────────── -->
@@ -29,15 +33,6 @@
             android:id="@+id/action_exploreFragment_to_captureDetailFragment"
             app:destination="@id/captureDetailFragment" />
     </fragment>
-
-    <!-- ───────────────────────────────────────────────────────────── -->
-    <!-- 3) HistoryFragment (Favorites)                                 -->
-    <!-- ───────────────────────────────────────────────────────────── -->
-    <fragment
-        android:id="@+id/favoritesFragment"
-        android:name="com.smartwaste.app.ui.fragments.HistoryFragment"
-        android:label="History"
-        tools:layout="@layout/fragment_favorites" />
 
     <!-- ───────────────────────────────────────────────────────────── -->
     <!-- 4) AccountFragment (Profile)                                    -->

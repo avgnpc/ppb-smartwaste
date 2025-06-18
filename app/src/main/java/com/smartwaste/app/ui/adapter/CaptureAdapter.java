@@ -16,6 +16,11 @@ import com.smartwaste.app.model.Capture;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+
 public class CaptureAdapter extends RecyclerView.Adapter<CaptureAdapter.CaptureViewHolder> {
 
     private final List<Capture> captureList = new ArrayList<>();
@@ -72,22 +77,27 @@ public class CaptureAdapter extends RecyclerView.Adapter<CaptureAdapter.CaptureV
         }
 
         public void bind(Capture capture) {
-            tvTimestamp.setText(capture.getTimestamp());
-            boolean sudah = capture.isDibersihkan();
-            tvDibersihkan.setText(capture.isDibersihkan() ? "Dibersihkan" : "Belum Dibersihkan");
-
-            if (sudah) {
-                tvDibersihkan.setBackgroundResource(R.drawable.status_bg_green);
-                tvDibersihkan.setTextColor(0xFFFFFFFF); // White
-            } else {
-                tvDibersihkan.setBackgroundResource(R.drawable.status_bg_red);
-                tvDibersihkan.setTextColor(0xFFFFFFFF); // White for contrast
+            String rawTimestamp = capture.getTimestamp();
+            String formatted = rawTimestamp; // fallback default
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy, HH:mm", new Locale("id", "ID"));
+                formatted = outputFormat.format(inputFormat.parse(rawTimestamp));
+            } catch (Exception e) {
+                e.printStackTrace(); // debug kalau ada masalah parsing
             }
+            tvTimestamp.setText(formatted);
+
+            boolean sudah = capture.isDibersihkan();
+            tvDibersihkan.setText(sudah ? "Dibersihkan" : "Belum Dibersihkan");
+            tvDibersihkan.setBackgroundResource(sudah ? R.drawable.status_bg_green : R.drawable.status_bg_red);
+            tvDibersihkan.setTextColor(0xFFFFFFFF); // putih
 
             Glide.with(itemView.getContext())
                     .load(capture.getImageUrl())
                     .placeholder(android.R.drawable.ic_menu_report_image)
                     .into(ivThumbnail);
         }
+
     }
 }

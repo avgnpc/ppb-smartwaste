@@ -18,8 +18,9 @@
             android:text="Detail Laporan"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/greenPrimary"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp" />
 
         <!-- Subheading for Map -->
         <TextView
@@ -29,7 +30,8 @@
             android:text="Lokasi Sampah"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginBottom="6dp"/>
+            android:textColor="#000000"
+            android:layout_marginBottom="6dp" />
 
         <!-- Map with border -->
         <androidx.cardview.widget.CardView
@@ -40,7 +42,7 @@
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </androidx.cardview.widget.CardView>
 
         <!-- Subheading for Image -->
@@ -51,7 +53,8 @@
             android:text="Foto Sampah"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginBottom="6dp"/>
+            android:textColor="#000000"
+            android:layout_marginBottom="6dp" />
 
         <!-- Image with border -->
         <androidx.cardview.widget.CardView
@@ -63,7 +66,7 @@
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
         </androidx.cardview.widget.CardView>
 
         <!-- Timestamp -->
@@ -73,9 +76,10 @@
             android:layout_height="wrap_content"
             android:text="Waktu laporan"
             android:layout_marginBottom="24dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            android:textColor="#000000" />
 
-
+        <!-- Deteksi Heading -->
         <TextView
             android:id="@+id/textDetectionsHeading"
             android:layout_width="wrap_content"
@@ -83,9 +87,11 @@
             android:text="Daftar Sampah"
             android:textStyle="bold"
             android:textSize="16sp"
+            android:textColor="#000000"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="6dp"/>
+            android:layout_marginBottom="6dp" />
 
+        <!-- Table -->
         <TableLayout
             android:id="@+id/layoutDetections"
             android:layout_width="match_parent"
@@ -93,9 +99,9 @@
             android:stretchColumns="*"
             android:gravity="center_horizontal"
             android:paddingTop="4dp"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp" />
 
-        <!-- Status with colored background -->
+        <!-- Status Text -->
         <TextView
             android:id="@+id/textStatus"
             android:layout_width="wrap_content"
@@ -106,9 +112,9 @@
             android:padding="8dp"
             android:textStyle="bold"
             android:textSize="15sp"
-            android:background="@drawable/status_bg_default"/>
+            android:background="@drawable/status_bg_default" />
 
-        <!-- Add this inside the LinearLayout, after the status TextView -->
+        <!-- Button -->
         <Button
             android:id="@+id/buttonBersihkan"
             android:layout_width="wrap_content"
@@ -117,6 +123,6 @@
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/colorPrimary"
             android:textColor="@android:color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>
