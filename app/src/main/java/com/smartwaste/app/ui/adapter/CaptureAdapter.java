@@ -73,7 +73,16 @@ public class CaptureAdapter extends RecyclerView.Adapter<CaptureAdapter.CaptureV
 
         public void bind(Capture capture) {
             tvTimestamp.setText(capture.getTimestamp());
+            boolean sudah = capture.isDibersihkan();
             tvDibersihkan.setText(capture.isDibersihkan() ? "Dibersihkan" : "Belum Dibersihkan");
+
+            if (sudah) {
+                tvDibersihkan.setBackgroundResource(R.drawable.status_bg_green);
+                tvDibersihkan.setTextColor(0xFFFFFFFF); // White
+            } else {
+                tvDibersihkan.setBackgroundResource(R.drawable.status_bg_red);
+                tvDibersihkan.setTextColor(0xFFFFFFFF); // White for contrast
+            }
 
             Glide.with(itemView.getContext())
                     .load(capture.getImageUrl())

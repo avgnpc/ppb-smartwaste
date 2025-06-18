@@ -1,5 +1,6 @@
 package com.smartwaste.app.ui.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.smartwaste.app.R;
 import com.smartwaste.app.model.Capture;
@@ -55,7 +57,7 @@ public class CaptureListFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.captureRecyclerView);
         progressBar = view.findViewById(R.id.progressBar);
-        filterSpinner = view.findViewById(R.id.spinnerFilter);
+//        filterSpinner = view.findViewById(R.id.spinnerFilter);
 
         adapter = new CaptureAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -74,7 +76,29 @@ public class CaptureListFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
         });
 
-        setupFilterSpinner();
+        MaterialButton buttonFilter = view.findViewById(R.id.buttonFilter);
+        buttonFilter.setOnClickListener(v -> {
+            // Show filter dialog or menu here
+            // Example: show a simple dialog to select filter
+            String[] options = {"Semua", "Dibersihkan", "Belum Dibersihkan"};
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Filter")
+                    .setItems(options, (dialog, which) -> {
+                        Boolean filter = null;
+                        if (which == 1) filter = true;
+                        else if (which == 2) filter = false;
+                        if (!filterEquals(dibersihkanFilter, filter) || isFirstLoad) {
+                            dibersihkanFilter = filter;
+                            resetPagination();
+                            loadNextPage();
+                            isFirstLoad = false;
+                        }
+                    })
+                    .show();
+        });
+
+//        setupFilterSpinner();
+
         setupRecyclerView();
 
         return view;

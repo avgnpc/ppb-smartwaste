@@ -67,6 +67,7 @@ dependencies {
     // Facebook Login
     implementation(libs.facebook.login)
     implementation(libs.camera.view)
+    implementation(libs.androidx.lifecycle.viewmodel.android)
 
     // Testing
     testImplementation(libs.junit)
@@ -110,4 +111,5 @@ dependencies {
     implementation (libs.glide)
     annotationProcessor (libs.compiler)
 
+    implementation (libs.play.services.maps)
 }

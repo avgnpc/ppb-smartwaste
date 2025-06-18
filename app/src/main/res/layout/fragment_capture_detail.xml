@@ -1,30 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="80dp">
 
-    <ProgressBar
-        android:id="@+id/detailProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/textRawJson"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Raw data will appear here."
-        android:textSize="14sp"
-        android:paddingTop="16dp" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/buttonMarkCleaned"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mark as Dibersihkan"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+        <!-- Heading -->
+        <TextView
+            android:id="@+id/textHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detail Laporan"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Subheading for Map -->
+        <TextView
+            android:id="@+id/textMapSubheading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lokasi Sampah"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Map with border -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/border_primary"
+            android:layout_marginBottom="16dp">
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Subheading for Image -->
+        <TextView
+            android:id="@+id/textImageSubheading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Foto Sampah"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Image with border -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/border_primary"
+            android:layout_marginBottom="16dp">
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Timestamp -->
+        <TextView
+            android:id="@+id/textTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Waktu laporan"
+            android:layout_marginBottom="24dp"
+            android:textSize="15sp"/>
+
+
+        <TextView
+            android:id="@+id/textDetectionsHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Daftar Sampah"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="6dp"/>
+
+        <TableLayout
+            android:id="@+id/layoutDetections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:gravity="center_horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Status with colored background -->
+        <TextView
+            android:id="@+id/textStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:layout_marginBottom="13dp"
+            android:textColor="@android:color/white"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:background="@drawable/status_bg_default"/>
+
+        <!-- Add this inside the LinearLayout, after the status TextView -->
+        <Button
+            android:id="@+id/buttonBersihkan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tandai Sudah Dibersihkan"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/captureListContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Spinner
-        android:id="@+id/spinnerFilter"
+    <!-- Heading -->
+    <TextView
+        android:id="@+id/textHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Laporan Saya"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="18dp"/>
+
+    <!-- Filter Button (Material) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/filter_dibersihkan" />
+        android:text="Filter"
+        android:icon="@drawable/baseline_arrow_drop_down_circle_24"
+        app:iconPadding="8dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="10dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/captureRecyclerView"

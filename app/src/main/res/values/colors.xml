@@ -15,4 +15,10 @@
     <color name="colorError">#D32F2F</color>           <!-- Error states -->
     <color name="smart_green">#06B24B</color>          <!-- Login anda Register Button -->
     <color name="dark_gray_text">#444444</color> <!-- Abu-abu gelap -->
+    <color name="table_header_bg">#2196F3</color> <!-- Blue, or any color you like -->
+    <color name="table_row_bg">#F5F5F5</color>    <!-- Light gray for rows -->
+    <color name="table_row_alt_bg">#FFFFFF</color> <!-- White for alternate rows (optional) -->
+    <color name="primary">#6200EE</color>
+    <color name="secondary_text">#757575</color>
+    <color name="secondary">#03DAC6</color>
 </resources>

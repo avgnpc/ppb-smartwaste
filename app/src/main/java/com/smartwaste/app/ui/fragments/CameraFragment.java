@@ -1,6 +1,7 @@
 package com.smartwaste.app.ui.fragments;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -19,6 +20,8 @@ import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
@@ -64,6 +67,8 @@ import com.smartwaste.app.services.FirebaseService;
 import com.smartwaste.app.services.ImageKitService;
 import com.smartwaste.app.repository.UserRepository;
 import org.json.JSONArray;
+
+import android.graphics.Matrix;
 
 import java.util.Base64;
 import javax.crypto.Mac;
@@ -146,8 +151,9 @@ public class CameraFragment extends Fragment {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss", Locale.getDefault()).format(new Date());
 
             getCurrentLocation((latitude, longitude) -> {
-                Bitmap bitmap = imageToBitmap(image);
                 Map<String, Integer> trashCounts = overlayView.getDetectionSummary();
+
+                int rotationDegrees = image.getImageInfo().getRotationDegrees();
 
                 UserRepository userRepository = new UserRepository();
                 userRepository.getCurrentUser(user -> {
@@ -179,40 +185,47 @@ public class CameraFragment extends Fragment {
                         return;
                     }
 
-                    // Save locally as backup (optional)
-                    saveImage(bitmap, timestamp);
-                    saveJsonToDownloads(json, timestamp);
+                    Bitmap bitmap = imageToBitmap(image);
+                    if (rotationDegrees != 0) {
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(rotationDegrees);
+                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    }
 
-                    // Upload using direct REST call with OkHttp
-                    ImageKitService uploader = new ImageKitService();
-                    String fileName = "capture_" + timestamp + ".jpg";
+                    // Show preview dialog before uploading
+                    Bitmap finalBitmap = bitmap;
+                    showPreviewDialog(bitmap, timestamp, latitude, longitude, trashCounts, () -> {
 
-                    uploader.uploadImage(bitmap, fileName, new ImageKitService.UploadCallback() {
-                        @Override
-                        public void onSuccess(String imageUrl) {
-                            FirebaseService firebaseService = new FirebaseService();
-                            firebaseService.saveCaptureData(json, imageUrl,
-                                    unused -> {
-                                        Log.d("Upload", "Uploaded to Firestore");
-                                        Toast.makeText(requireContext(), "Data uploaded", Toast.LENGTH_SHORT).show();
-                                        isCapturing = false;
-                                    },
-                                    error -> {
-                                        Log.e("Upload", "Failed Firestore upload", error);
-                                        Toast.makeText(requireContext(), "Failed upload to Firestore", Toast.LENGTH_SHORT).show();
-                                        isCapturing = false;
-                                    }
-                            );
-                            image.close();
-                        }
+                        ImageKitService uploader = new ImageKitService();
+                        String fileName = "capture_" + timestamp + ".jpg";
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Log.e("Upload", "Failed ImageKit upload", e);
-                            Toast.makeText(requireContext(), "Failed upload to ImageKit", Toast.LENGTH_SHORT).show();
-                            isCapturing = false;
-                            image.close();
-                        }
+                        uploader.uploadImage(finalBitmap, fileName, new ImageKitService.UploadCallback() {
+                            @Override
+                            public void onSuccess(String imageUrl) {
+                                FirebaseService firebaseService = new FirebaseService();
+                                firebaseService.saveCaptureData(json, imageUrl,
+                                        unused -> {
+                                            Log.d("Upload", "Uploaded to Firestore");
+                                            Toast.makeText(requireContext(), "Data uploaded", Toast.LENGTH_SHORT).show();
+                                            isCapturing = false;
+                                        },
+                                        error -> {
+                                            Log.e("Upload", "Failed Firestore upload", error);
+                                            Toast.makeText(requireContext(), "Failed upload to Firestore", Toast.LENGTH_SHORT).show();
+                                            isCapturing = false;
+                                        }
+                                );
+                                image.close();
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.e("Upload", "Failed ImageKit upload", e);
+                                Toast.makeText(requireContext(), "Failed upload to ImageKit", Toast.LENGTH_SHORT).show();
+                                isCapturing = false;
+                                image.close();
+                            }
+                        });
                     });
 
                 }, error -> {
@@ -223,6 +236,32 @@ public class CameraFragment extends Fragment {
                 });
             });
         });
+    }
+
+    private void showPreviewDialog(Bitmap bitmap, String timestamp, double latitude, double longitude, Map<String, Integer> trashCounts, Runnable onConfirm) {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_capture_preview, null);
+        ImageView ivPreview = dialogView.findViewById(R.id.iv_preview);
+        TextView tvTimestamp = dialogView.findViewById(R.id.tv_timestamp);
+        TextView tvLocation = dialogView.findViewById(R.id.tv_location);
+        TextView tvDetections = dialogView.findViewById(R.id.tv_detections);
+
+        ivPreview.setImageBitmap(bitmap);
+        tvTimestamp.setText("Timestamp: " + timestamp);
+        tvLocation.setText("Location: " + latitude + ", " + longitude);
+
+        StringBuilder detections = new StringBuilder("Detections:\n");
+        for (Map.Entry<String, Integer> entry : trashCounts.entrySet()) {
+            detections.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        tvDetections.setText(detections.toString());
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Preview Laporan")
+                .setView(dialogView)
+                .setPositiveButton("Buat Laporan", (dialog, which) -> onConfirm.run())
+                .setNegativeButton("Batal", (dialog, which) -> isCapturing = false)
+                .setCancelable(false)
+                .show();
     }
 
     private void getCurrentLocation(LocationCallback callback) {

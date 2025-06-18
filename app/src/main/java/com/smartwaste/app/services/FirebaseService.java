@@ -164,5 +164,14 @@ public class FirebaseService {
                 .addOnFailureListener(onFailure);
     }
 
+// In FirebaseService.java
 
+    public void updateCaptureStatus(String captureId, boolean dibersihkan, java.util.function.Consumer<Boolean> callback) {
+        FirebaseFirestore.getInstance()
+                .collection("captures")
+                .document(captureId)
+                .update("dibersihkan", dibersihkan)
+                .addOnSuccessListener(aVoid -> callback.accept(true))
+                .addOnFailureListener(e -> callback.accept(false));
+    }
 }
