@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.google.firebase.firestore.Query;
 import com.smartwaste.app.R;
 import com.smartwaste.app.model.Capture;
 import com.smartwaste.app.ui.adapter.CaptureAdapter;
+import com.smartwaste.app.viewmodel.AccountViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,10 @@ public class HomeFragment extends Fragment implements CaptureAdapter.OnItemClick
 
     private RecyclerView recyclerView;
     private CaptureAdapter captureAdapter;
+    private AccountViewModel viewModel;
+
+    private TextView tvUserName;
+    private TextView tvLocation;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -41,14 +48,28 @@ public class HomeFragment extends Fragment implements CaptureAdapter.OnItemClick
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = view.findViewById(R.id.rvCaptures);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        viewModel = new ViewModelProvider(this).get(AccountViewModel.class);
 
+        recyclerView = view.findViewById(R.id.rvCaptures);
+        tvUserName = view.findViewById(R.id.tvUserName);
+        tvLocation = view.findViewById(R.id.tvLocation);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         captureAdapter = new CaptureAdapter();
-        captureAdapter.setOnItemClickListener(this); // ← Hubungkan listener klik
+        captureAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(captureAdapter);
 
         loadCapturesFromFirestore();
+        observeUser();
+    }
+
+    private void observeUser() {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                tvUserName.setText("Halo " + user.getName()+"!");
+                tvLocation.setText(user.getLocation());
+            }
+        });
     }
 
     private void loadCapturesFromFirestore() {

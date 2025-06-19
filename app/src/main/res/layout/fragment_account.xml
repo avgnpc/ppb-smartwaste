@@ -51,7 +51,7 @@
                 android:id="@+id/text_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Budi Sen"
+                android:text=""
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
@@ -62,7 +62,7 @@
                 android:id="@+id/text_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lokasi : Surabaya"
+                android:text="Lokasi : "
                 android:textColor="#666666"
                 android:layout_gravity="center" />
 

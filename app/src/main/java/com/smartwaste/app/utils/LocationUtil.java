@@ -40,8 +40,8 @@ public class LocationUtil {
             if (addressList != null && !addressList.isEmpty()) {
                 Address address = addressList.get(0);
 
-                // Force Surabaya-style city level
-                String city = address.getSubAdminArea(); // <-- Prefer this
+//                String city = address.getSubAdminArea(); // <-- Prefer this
+                String city = address.getSubLocality(); // <-- Prefer this
                 if (city == null || city.isEmpty()) {
                     city = address.getLocality(); // fallback to district
                 }
@@ -59,6 +59,5 @@ public class LocationUtil {
         }
         return "Unknown City";
     }
-
 
 }
