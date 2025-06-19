@@ -1,5 +1,6 @@
 package com.smartwaste.app.ui.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,10 +23,13 @@ import com.google.firebase.firestore.Query;
 import com.smartwaste.app.R;
 import com.smartwaste.app.model.Capture;
 import com.smartwaste.app.ui.adapter.CaptureAdapter;
+import com.smartwaste.app.utils.LocationUtil;
 import com.smartwaste.app.viewmodel.AccountViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment implements CaptureAdapter.OnItemClickListener {
 
@@ -66,7 +70,7 @@ public class HomeFragment extends Fragment implements CaptureAdapter.OnItemClick
     private void observeUser() {
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                tvUserName.setText("Halo " + user.getName()+"!");
+                tvUserName.setText("Halo " + user.getName() + "!");
                 tvLocation.setText(user.getLocation());
             }
         });
@@ -79,17 +83,40 @@ public class HomeFragment extends Fragment implements CaptureAdapter.OnItemClick
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Capture> list = new ArrayList<>();
+                    Map<String, Integer> subLocalityCounts = new HashMap<>();
+
                     for (DocumentSnapshot doc : querySnapshot) {
                         Capture capture = doc.toObject(Capture.class);
                         if (capture != null) {
                             capture.setId(doc.getId());
                             capture.setSnapshot(doc);
                             list.add(capture);
+
+                            // Aggregate subLocality
+                            Map<String, Object> locMap = (Map<String, Object>) doc.get("location");
+                            if (locMap != null && locMap.get("latitude") != null && locMap.get("longitude") != null) {
+                                double lat = (double) locMap.get("latitude");
+                                double lon = (double) locMap.get("longitude");
+
+                                Location location = new Location("");
+                                location.setLatitude(lat);
+                                location.setLongitude(lon);
+
+                                String subLocality = LocationUtil.getCityName(requireContext(), location);
+                                if (subLocality != null) {
+                                    subLocalityCounts.put(subLocality, subLocalityCounts.getOrDefault(subLocality, 0) + 1);
+                                }
+                            }
                         }
                     }
 
                     captureAdapter.submitList(list);
-                    Log.d("HomeFragment", "Jumlah data: " + list.size());
+
+                    // Log aggregated locations
+                    for (Map.Entry<String, Integer> entry : subLocalityCounts.entrySet()) {
+                        Log.d("SubLocalityAgg", entry.getKey() + " = " + entry.getValue());
+                    }
+
                 })
                 .addOnFailureListener(e -> {
                     Log.e("HomeFragment", "Gagal ambil data", e);
