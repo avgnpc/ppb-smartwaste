@@ -4,36 +4,103 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@android:color/background_light">
 
-    <!-- NavHost for Navigation Component -->
+    <!-- Fragment Container -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph"
-        app:defaultNavHost="true" />
+        android:background="@android:color/transparent"
+        android:elevation="0dp" />
 
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
+    <!-- Background NavBar -->
+    <ImageView
+        android:id="@+id/nav_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/bottom_nav_color_selector"
-        app:itemTextColor="@color/bottom_nav_color_selector"
-        android:background="@drawable/bottom_nav_background" />
+        android:src="@drawable/nav_bg"
+        android:scaleType="fitXY"
+        android:elevation="8dp" />
 
-    <!-- Floating Action Button -->
+    <!-- Tombol Navigasi -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/nav_container"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:background="@android:color/transparent"
+        android:elevation="12dp">
+
+        <!-- Home -->
+        <ImageButton
+            android:id="@+id/nav_home"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="48dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_home"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Beranda"
+            app:tint="@color/bottom_nav_color_selector"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Clipboard -->
+        <ImageButton
+            android:id="@+id/nav_clipboard"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="24dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_clipboard"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Riwayat"
+            app:tint="@color/bottom_nav_color_selector"
+            app:layout_constraintEnd_toStartOf="@+id/nav_profile"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Profile -->
+        <ImageButton
+            android:id="@+id/nav_profile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_profile"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Profil"
+            app:tint="@color/bottom_nav_color_selector"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- FAB Kamera -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_marginBottom="32dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="46dp"
+        android:contentDescription="Buka Kamera"
+        android:elevation="16dp"
+        android:clickable="true"
         app:srcCompat="@drawable/baseline_photo_camera_24"
-        app:backgroundTint="@color/colorPrimary" />
+        app:backgroundTint="@color/greenPrimary"
+        app:useCompatPadding="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

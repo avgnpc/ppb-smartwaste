@@ -21,4 +21,6 @@
     <color name="primary">#6200EE</color>
     <color name="secondary_text">#757575</color>
     <color name="secondary">#03DAC6</color>
+    <color name="greenPrimary">#06B24B</color>
+    <color name="backgroundLight">#EEEEEE</color>
 </resources>

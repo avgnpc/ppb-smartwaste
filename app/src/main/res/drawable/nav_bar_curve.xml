@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="70dp"
+    android:viewportWidth="400"
+    android:viewportHeight="70">
+
+    <!-- Background putih -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M0,0
+            h400
+            v70
+            h-400
+            z
+        " />
+
+    <!-- Lengkungan di tengah -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M150,0
+            c25,0 25,30 50,30
+            s25,-30 50,-30
+            v70
+            h-100
+            z
+        " />
+</vector>

@@ -42,7 +42,7 @@ public class CaptureDetailFragment extends Fragment implements OnMapReadyCallbac
     private MapView mapView;
     private GoogleMap googleMap;
     private ImageView imageView;
-    private TextView textTimestamp, textUserId, textStatus;
+    private TextView textTimestamp, textStatus;
     private CaptureDetailViewModel viewModel;
     private Capture capture;
     private Button buttonBersihkan;
@@ -64,7 +64,6 @@ public class CaptureDetailFragment extends Fragment implements OnMapReadyCallbac
         mapView = view.findViewById(R.id.mapView);
         imageView = view.findViewById(R.id.imageView);
         textTimestamp = view.findViewById(R.id.textTimestamp);
-//        textUserId = view.findViewById(R.id.textUserId);
         textStatus = view.findViewById(R.id.textStatus);
         buttonBersihkan = view.findViewById(R.id.buttonBersihkan);
         layoutDetections = view.findViewById(R.id.layoutDetections);
@@ -91,40 +90,39 @@ public class CaptureDetailFragment extends Fragment implements OnMapReadyCallbac
 
         Glide.with(this).load(capture.getImageUrl()).into(imageView);
 
-        // Format timestamp
+        // Format timestamp ke "19 Juni 2025, 01:20"
         String formattedTime = capture.getTimestamp();
         try {
-            // Example: if timestamp is ISO 8601 or millis, adjust parsing accordingly
-            long millis = Long.parseLong(capture.getTimestamp());
-            Date date = new Date(millis);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
-            formattedTime = sdf.format(date);
-        } catch (Exception ignored) {}
-
+            String isoString = capture.getTimestamp().replace("T", "-").replace(":", "-");
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault());
+            Date date = isoFormat.parse(isoString);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy, HH:mm", new Locale("id", "ID"));
+            formattedTime = outputFormat.format(date);
+        } catch (Exception e) {
+            formattedTime = capture.getTimestamp();
+        }
         textTimestamp.setText("Waktu laporan: " + formattedTime);
 
-        // Status color
+        // Status
         boolean sudah = capture.isDibersihkan();
         textStatus.setText("Status Sampah: " + (sudah ? "Dibersihkan" : "Belum Dibersihkan"));
         int bgRes = sudah ? R.drawable.status_bg_green : R.drawable.status_bg_red;
         textStatus.setBackground(ContextCompat.getDrawable(requireContext(), bgRes));
 
-        // Show/hide and handle Bersihkan button
-        if (!capture.isDibersihkan()) {
+        if (!sudah) {
             buttonBersihkan.setVisibility(View.VISIBLE);
             buttonBersihkan.setOnClickListener(v -> markAsCleaned());
         } else {
             buttonBersihkan.setVisibility(View.GONE);
         }
 
-        // Populate detected objects table
         layoutDetections.removeAllViews();
 
-        // Header row
+        // Table Header
         TableRow header = new TableRow(requireContext());
         TextView th1 = new TextView(requireContext());
         th1.setText("Jenis Sampah");
-        th1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        th1.setTypeface(Typeface.DEFAULT_BOLD);
         th1.setGravity(Gravity.CENTER);
         th1.setPadding(16, 8, 16, 8);
         th1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.table_header_bg));
@@ -132,7 +130,7 @@ public class CaptureDetailFragment extends Fragment implements OnMapReadyCallbac
 
         TextView th2 = new TextView(requireContext());
         th2.setText("Jumlah");
-        th2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        th2.setTypeface(Typeface.DEFAULT_BOLD);
         th2.setGravity(Gravity.CENTER);
         th2.setPadding(16, 8, 16, 8);
         th2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.table_header_bg));
@@ -213,7 +211,7 @@ public class CaptureDetailFragment extends Fragment implements OnMapReadyCallbac
             double lng = ((Number) loc.get("longitude")).doubleValue();
             LatLng latLng = new LatLng(lat, lng);
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(latLng).title("Capture Location"));
+            googleMap.addMarker(new MarkerOptions().position(latLng).title("Lokasi Sampah"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f));
         }
     }

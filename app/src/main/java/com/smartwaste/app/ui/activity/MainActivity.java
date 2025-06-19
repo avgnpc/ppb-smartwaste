@@ -1,51 +1,103 @@
 package com.smartwaste.app.ui.activity;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.smartwaste.app.R;
 import com.smartwaste.app.viewmodel.CameraViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView bottomNav;
+    private ImageButton navHome, navClipboard, navProfile;
     private FloatingActionButton fabCamera;
     private CameraViewModel cameraViewModel;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNav = findViewById(R.id.bottom_nav);
+        navHome = findViewById(R.id.nav_home);
+        navClipboard = findViewById(R.id.nav_clipboard);
+        navProfile = findViewById(R.id.nav_profile);
         fabCamera = findViewById(R.id.fab_camera);
 
-        // 1) Set up the NavController
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.nav_host_fragment);
 
         if (navHostFragment != null) {
-            NavController navController = navHostFragment.getNavController();
-            NavigationUI.setupWithNavController(bottomNav, navController);
+            navController = navHostFragment.getNavController();
 
-            // 2) FAB click now simply navigates to CameraFragment
-            fabCamera.setOnClickListener(v ->
-                    navController.navigate(R.id.cameraFragment)
-            );
+            // Listener untuk update tombol saat fragment berubah (termasuk saat tekan Back)
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                int id = destination.getId();
+                if (id == R.id.homeFragment) {
+                    setActiveButton(navHome);
+                } else if (id == R.id.exploreFragment) {
+                    setActiveButton(navClipboard);
+                } else if (id == R.id.profileFragment) {
+                    setActiveButton(navProfile);
+                } else {
+                    setActiveButton(null); // Tidak menyorot tombol apapun
+                }
+            });
         }
 
-        // 3) (Optional) Instantiate the ViewModel if you want to show toasts/messages later
+        // FAB ke kamera
+        fabCamera.setOnClickListener(v -> {
+            if (navController != null) {
+                navController.navigate(R.id.cameraFragment);
+            }
+        });
+
+        // Navigasi tombol manual
+        navHome.setOnClickListener(v -> {
+            if (navController != null) {
+                navController.navigate(R.id.homeFragment);
+            }
+        });
+
+        navClipboard.setOnClickListener(v -> {
+            if (navController != null) {
+                navController.navigate(R.id.exploreFragment);
+            }
+        });
+
+        navProfile.setOnClickListener(v -> {
+            if (navController != null) {
+                navController.navigate(R.id.profileFragment);
+            }
+        });
+
+        // ViewModel opsional
         cameraViewModel = new ViewModelProvider(this).get(CameraViewModel.class);
-        // Note: We are not observing any LiveData in MainActivity now,
-        // but the fragment can still post to cameraViewModel.message if needed.
+
+        // Default aktif: Home (opsional, bisa dihapus karena sudah di-handle listener)
+        setActiveButton(navHome);
+    }
+
+    private void setActiveButton(@Nullable ImageButton activeButton) {
+        navHome.setSelected(false);
+        navClipboard.setSelected(false);
+        navProfile.setSelected(false);
+
+        if (activeButton != null) {
+            activeButton.setSelected(true);
+        }
+
+        // Terapkan warna selector
+        navHome.setImageTintList(ContextCompat.getColorStateList(this, R.color.bottom_nav_color_selector));
+        navClipboard.setImageTintList(ContextCompat.getColorStateList(this, R.color.bottom_nav_color_selector));
+        navProfile.setImageTintList(ContextCompat.getColorStateList(this, R.color.bottom_nav_color_selector));
     }
 }

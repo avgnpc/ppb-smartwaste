@@ -1,17 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 1. Home (paling kiri) -->
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
         android:title="Home" />
+
+    <!-- 2. Dummy kosong sebagai spacer tengah -->
+    <item
+        android:id="@+id/emptyItem"
+        android:enabled="false"
+        android:icon="@drawable/ic_transparent"
+        android:title=""
+        android:checkable="false" />
+
+    <!-- 3. Explore (kanan tengah) -->
     <item
         android:id="@+id/exploreFragment"
-        android:icon="@drawable/ic_explore"
+        android:icon="@drawable/ic_clipboard"
         android:title="Explore" />
-    <item
-        android:id="@+id/favoritesFragment"
-        android:icon="@drawable/ic_star"
-        android:title="History" />
+
+    <!-- 4. Profile (paling kanan) -->
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile"

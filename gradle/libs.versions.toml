@@ -1,5 +1,6 @@
 [versions]
 agp = "8.9.2"
+androidMapsUtils = "2.3.0"
 androidxAppcompatAppcompat = "1.6.1"
 androidxConstraintlayoutConstraintlayout3 = "2.1.4"
 cameraBom = "1.3.1"
@@ -37,6 +38,7 @@ lifecycle = "2.6.1"
 navigation = "2.7.7"
 cameraView = "1.4.2"
 playServicesMaps = "19.2.0"
+playServicesMapsVersion = "18.2.0"
 retrofit = "2.9.0"
 tensorflowLite = "2.12.0"
 tensorflowLiteSupport = "0.4.3"
@@ -46,6 +48,7 @@ lifecycleViewmodelAndroid = "2.9.1"
 
 
 [libraries]
+android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 androidx-appcompat-appcompat-v161-x2 = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompatAppcompat" }
 androidx-camera-bom = { module = "androidx.camera:camera-bom", version.ref = "cameraBomVersion" }
 androidx-camera-bom-v131 = { module = "androidx.camera:camera-bom", version.ref = "cameraBom" }
@@ -98,6 +101,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesAuth" }
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+play-services-maps-v1820 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
 tensorflow-lite-support = { module = "org.tensorflow:tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
