@@ -112,4 +112,5 @@ dependencies {
     annotationProcessor (libs.compiler)
 
     implementation (libs.play.services.maps)
+    implementation (libs.android.maps.utils)
 }
