@@ -91,7 +91,7 @@ public class CameraFragment extends Fragment {
     // Roboflow API info (replace with your real MODEL URL and API key)
     private static final String ROBOFLOW_API_KEY = "dK43MuIseHtrwhoCzlyL";
     private static final String ROBOFLOW_MODEL_URL =
-            "https://serverless.roboflow.com/trash-detection-on-ocean-surface/15";
+            "https://serverless.roboflow.com/trash-detection-on-ocean-surface/17";
 
     @Override
     public View onCreateView(
